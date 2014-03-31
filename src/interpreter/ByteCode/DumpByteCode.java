@@ -8,15 +8,16 @@ import interpreter.VirtualMachine;
  * @author admin
  */
 public class DumpByteCode extends ByteCode{
-    String state;
+    String args;
     
     // the array of arguments will simply be ["DUMP"]["ON"] or ["OFF"]
     public void init(String arguments[]){
-        state = arguments[1];
+        args = arguments[1];
     }
     
     public void execute(VirtualMachine vm){
-        
+        if (args.contains("ON"))  vm.dumping = true;
+        if (args.contains("OFF")) vm.dumping = false;
     }
     
 }

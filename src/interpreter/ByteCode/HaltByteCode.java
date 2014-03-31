@@ -12,7 +12,7 @@ public class HaltByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        
+        vm.turnOffVm();
     }
     
 }

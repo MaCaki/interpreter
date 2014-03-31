@@ -8,4 +8,8 @@ import interpreter.VirtualMachine;
  */
 public class WriteByteCode extends ByteCode{
     
+    public void init(String arguments[]){}
+    
+    // Every bytecode will be responsible for its own execution. 
+    public void execute(VirtualMachine vm){}
 }

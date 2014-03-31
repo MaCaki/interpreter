@@ -33,9 +33,7 @@ public class ByteCodeLoader {
 
                 theProgram.pushByteCode(theByteCode);
 
-           } catch (Exception e){ 
-                System.out.println(e.toString()); 
-           }
+           } catch (Exception e){ }
        }
        
        theProgram.resolveAddresses();

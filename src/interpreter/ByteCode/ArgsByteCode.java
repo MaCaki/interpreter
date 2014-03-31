@@ -21,6 +21,7 @@ public class ArgsByteCode extends ByteCode{
     }
         
     public void execute(VirtualMachine vm){
+        vm.runStack.newFrameAt(numArguments);
     }
     
 }

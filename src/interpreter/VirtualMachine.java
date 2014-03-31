@@ -1,4 +1,3 @@
-
 package interpreter;
 import java.util.*;
 import interpreter.ByteCode.*;
@@ -8,12 +7,12 @@ import interpreter.ByteCode.*;
  */
 public class VirtualMachine {
     
-    
     private int pc;
     private Stack returnAddrs;
-    private RunTimeStack runStack;
+    public RunTimeStack runStack;
     private boolean isRunning;
     private Program program;
+    public boolean dumping = false;
            
             
     VirtualMachine(Program prog){
@@ -32,10 +31,11 @@ public class VirtualMachine {
         runStack = new RunTimeStack();
         returnAddrs = new Stack();
         isRunning = true;
+        BinaryOpTable.init();
         
         while (isRunning){
             ByteCode code = program.getCode(pc);
-            System.out.println(code.toString()); 
+            code.execute(this);
             pc++;
         }
     }
@@ -45,9 +45,13 @@ public class VirtualMachine {
         returnAddrs.push(n);
     }
     
-    public void pushToRunTimeStack(int n){
-        runStack.push(n);
+   
+    public void turnOffVm(){
+        isRunning = false;
     }
     
+    
+    
+ 
     
 }

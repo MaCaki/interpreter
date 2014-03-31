@@ -1,5 +1,5 @@
 package interpreter.ByteCode;
-import Interpreter.*;
+import interpreter.*;
 /**
  *
  * This is the abstract class defining the ByteCode objects.  The ByteCode 

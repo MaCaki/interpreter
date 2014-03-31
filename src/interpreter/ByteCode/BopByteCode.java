@@ -12,12 +12,28 @@ public class BopByteCode extends ByteCode{
     
     String binaryOp;
     
+    
+    
     public void init(String arguments[]){
         binaryOp = arguments[1];
     }
     
     public void execute(VirtualMachine vm){
+        BinaryOperation op = BinaryOpTable.get(binaryOp);
+        
+        int secondOperand = vm.runStack.pop();
+        int firstOperand = vm.runStack.pop();
+        
+        int result = op.binaryOp(firstOperand, secondOperand);
+        vm.runStack.push(result);
+        
+        if (vm.dumping) {
+            System.out.println("BOP " + binaryOp);
+            vm.runStack.dump();
+        }
     }
 
        
 }
+
+
