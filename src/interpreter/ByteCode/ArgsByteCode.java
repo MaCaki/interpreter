@@ -22,6 +22,11 @@ public class ArgsByteCode extends ByteCode{
         
     public void execute(VirtualMachine vm){
         vm.runStack.newFrameAt(numArguments);
+        
+        if (vm.dumping) {
+            System.out.println("ARGS " + numArguments);
+            vm.runStack.dump();
+        }
     }
     
 }

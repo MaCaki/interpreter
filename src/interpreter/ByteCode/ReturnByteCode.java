@@ -8,9 +8,20 @@ import interpreter.VirtualMachine;
  */
 public class ReturnByteCode extends ByteCode{
     
+    String func = "";
     
-    public void init(String arguments[]){}
+    public void init(String arguments[]){
+        if (arguments.length>1) func = arguments[1];
+    }
     
     // Every bytecode will be responsible for its own execution. 
-    public void execute(VirtualMachine vm){}
+    public void execute(VirtualMachine vm){
+        vm.pc = vm.popReturnAddrs();
+        vm.runStack.popFrame();
+        
+        if (vm.dumping) {
+            System.out.println("RETURN " + func);
+            vm.runStack.dump();
+        }
+    }
 }

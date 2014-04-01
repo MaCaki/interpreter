@@ -21,14 +21,34 @@ public class RunTimeStack {
         framePointers.push(0);
         runStack = new Vector<Integer>();
     }
+    
     // dump the RunTimStack for debugging info
     public void dump(){
-        //int numFrames = framePointers.size();
+        Vector<Integer> stack = (Vector)runStack.clone();
+        Vector<Integer> framePtrs = (Vector)framePointers.clone();
         
-        System.out.println(runStack.toString());
+        Vector frameArray[] = new Vector[framePtrs.size()];
+        
+        for( int i = framePtrs.size(); i >0 ; i-- ){
+            frameArray[i-1] = new Vector<Integer>();
+            int startIndex = framePtrs.get(i-1);
+            int currentSize = stack.size();
+            
+            for (int k=startIndex; k< currentSize; k++){
+                frameArray[i-1].add(stack.remove(startIndex));
+            }
+        }
+        
+        for ( int i=0; i<framePtrs.size(); i++){
+            System.out.print(frameArray[i].toString());
+        }
+        System.out.println();
         
     }
     
+    public int peek(){
+        return runStack.lastElement();
+    }
     // pop the top item from the runtime stack
     public int pop(){
         int top = runStack.lastElement();
@@ -55,17 +75,29 @@ public class RunTimeStack {
     // function's return value is at the top of the stack so we'll save the 
     // value, pop the top frame then push the return value.
     public void popFrame(){
-        
+        int top = this.pop();
+        int currentSize = runStack.size();
+        int startIndex = framePointers.pop();
+        for ( int i=startIndex; i<currentSize; i++){
+            runStack.remove(startIndex);
+        }
+        this.push(top);
     }
             
     //Used to store into variables
     public int store(int offset){
+        int top = this.pop();
+        runStack.add(framePointers.peek()+offset, top);
+        runStack.removeElementAt(framePointers.peek()+offset+1);
         return offset;
     }
     
     // Used to load variables onto the stack 
+    // returns the value that is at a given offset from the start of the
+    // current frame. 
     public int load(int offset){
-        return offset;
+        
+        return runStack.get(framePointers.peek()+offset);
     }
     
     // Used to load literals onto the stack - e.g. for lit 5 we call push(5)

@@ -7,8 +7,8 @@ import interpreter.ByteCode.*;
  */
 public class VirtualMachine {
     
-    private int pc;
-    private Stack returnAddrs;
+    public int pc;
+    private Stack<Integer> returnAddrs;
     public RunTimeStack runStack;
     private boolean isRunning;
     private Program program;
@@ -44,14 +44,13 @@ public class VirtualMachine {
     public void pushReturnAddrs(int n){
         returnAddrs.push(n);
     }
+    public int popReturnAddrs(){
+        return returnAddrs.pop();
+    }
     
    
     public void turnOffVm(){
         isRunning = false;
     }
-    
-    
-    
- 
     
 }

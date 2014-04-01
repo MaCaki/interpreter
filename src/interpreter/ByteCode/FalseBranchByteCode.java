@@ -10,12 +10,19 @@ import interpreter.VirtualMachine;
  */
 public class FalseBranchByteCode extends ByteCode{
     
-    String label;
+    public String targetLabel;
       
     public void init(String arguments[]){
-        label = arguments[1];
+        targetLabel = arguments[1];
     }
     
-    public void execute(VirtualMachine vm){}
+    public void execute(VirtualMachine vm){
+        if (vm.runStack.pop()==0) vm.pc = Integer.parseInt(targetLabel);
+        
+        if (vm.dumping) {
+            System.out.println("FALSEBRANCH " + targetLabel);
+            vm.runStack.dump();
+        }
+    }
     
 }

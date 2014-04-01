@@ -1,5 +1,6 @@
 package interpreter.ByteCode;
 import interpreter.VirtualMachine;
+import java.util.Scanner;
 /**
  * READ;
  * 
@@ -9,8 +10,19 @@ import interpreter.VirtualMachine;
  * @author admin
  */
 public class ReadByteCode extends ByteCode{
-     public void init(String arguments[]){}
     
-    // Every bytecode will be responsible for its own execution. 
-    public void execute(VirtualMachine vm){}
+    public void init(String arguments[]){}
+    
+    public void execute(VirtualMachine vm){
+        System.out.print("Enter an integer: ");
+        Scanner in = new Scanner(System.in);
+        int input = in.nextInt();
+        
+        vm.runStack.push(input);
+        
+        if (vm.dumping) {
+            System.out.println("READ");
+            vm.runStack.dump();
+        }
+    }
 }

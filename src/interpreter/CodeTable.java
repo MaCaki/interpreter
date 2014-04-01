@@ -21,7 +21,8 @@ public class CodeTable {
         codeTable.put("FALSEBRANCH", FalseBranchByteCode.class);
         codeTable.put("GOTO", GoToByteCode.class);
         codeTable.put("HALT", HaltByteCode.class);
-        codeTable.put("LABLE", LableByteCode.class);
+        codeTable.put("LOAD", LoadByteCode.class);
+        codeTable.put("LABEL", LabelByteCode.class);
         codeTable.put("LIT", LitByteCode.class);
         codeTable.put("POP", PopByteCode.class);
         codeTable.put("READ", ReadByteCode.class);

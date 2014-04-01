@@ -6,15 +6,20 @@ import interpreter.VirtualMachine;
  * or GOTO.  
  * @author admin
  */
-public class LableByteCode extends ByteCode{
+public class LabelByteCode extends ByteCode{
     
-    String label;
+    public String label;
     
     
     public void init(String arguments[]){
         label = arguments[1];
     }
     
-    public void execute(VirtualMachine vm){}
+    public void execute(VirtualMachine vm){
+         if (vm.dumping) {
+            System.out.println("LABEL " + label);
+            vm.runStack.dump();
+        }
+    }
     
 }

@@ -6,12 +6,19 @@ import interpreter.VirtualMachine;
  */
 public class GoToByteCode extends ByteCode{
     
-    public void init(){
-        
+    private String label;
+    
+    public void init(String arguments[]){
+        label = arguments[1];
     }
     
     public void execute(VirtualMachine vm){
+        vm.pc= Integer.parseInt(label);
         
+        if (vm.dumping) {
+            System.out.println("GOTO " + label);
+            vm.runStack.dump();
+        }
     }
     
 }

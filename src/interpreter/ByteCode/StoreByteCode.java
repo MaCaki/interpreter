@@ -11,16 +11,21 @@ import interpreter.VirtualMachine;
  */
 public class StoreByteCode extends ByteCode{
     
-    int value;
-    String id;
+    int offset;
+    String id = "";
     
     public void init(String arguments[]){
-        value = Integer.parseInt(arguments[1]);
-        id = arguments[2];
+        offset = Integer.parseInt(arguments[1]);
+        if (arguments.length>2) id = arguments[2];
     }
     
     public void execute(VirtualMachine vm){
+        vm.runStack.store(offset);
         
+        if (vm.dumping) {
+            System.out.println("STORE " + offset + " " + id);
+            vm.runStack.dump();
+        }
     }
     
 }

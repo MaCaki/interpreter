@@ -5,8 +5,18 @@ import interpreter.VirtualMachine;
  * @author admin
  */
 public class PopByteCode extends ByteCode{
-     public void init(String arguments[]){}
+    int numLevels;
     
-    // Every bytecode will be responsible for its own execution. 
-    public void execute(VirtualMachine vm){}
+    public void init(String arguments[]){
+        numLevels = Integer.parseInt(arguments[1]);
+    }
+    
+    public void execute(VirtualMachine vm){
+        for(int i=0; i<numLevels; i++) vm.runStack.pop();
+        
+          if (vm.dumping) {
+            System.out.println("POP " + numLevels);
+            vm.runStack.dump();
+        }
+    }
 }
