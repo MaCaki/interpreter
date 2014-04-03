@@ -8,6 +8,7 @@ import interpreter.VirtualMachine;
  */
 public class CallByteCode extends ByteCode{
     public String func;
+    public int targetAddrs;
     
     public void init(String arguments[]){
         func = arguments[1];
@@ -18,7 +19,7 @@ public class CallByteCode extends ByteCode{
         // this will be incremented after the ReturnByteCode is executed within 
         // the VM
         vm.pushReturnAddrs(vm.pc);
-        vm.pc = Integer.parseInt(func);
+        vm.pc = targetAddrs;
         if (vm.dumping) {
             System.out.println("CALL " + func);
             vm.runStack.dump();

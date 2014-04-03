@@ -6,14 +6,15 @@ import interpreter.VirtualMachine;
  */
 public class GoToByteCode extends ByteCode{
     
-    private String label;
+    public String label;
+    public int targetAddrs;
     
     public void init(String arguments[]){
         label = arguments[1];
     }
     
     public void execute(VirtualMachine vm){
-        vm.pc= Integer.parseInt(label);
+        vm.pc= targetAddrs;
         
         if (vm.dumping) {
             System.out.println("GOTO " + label);

@@ -33,6 +33,8 @@ public class VirtualMachine {
         isRunning = true;
         BinaryOpTable.init();
         
+        // VM should be responsible for dumping to Console. 
+        
         while (isRunning){
             ByteCode code = program.getCode(pc);
             code.execute(this);
@@ -52,5 +54,10 @@ public class VirtualMachine {
     public void turnOffVm(){
         isRunning = false;
     }
+    
+    public void newFrameOnRunTimeStackAt( int numArguments){
+        runStack.newFrameAt(numArguments);
+    }
+    
     
 }

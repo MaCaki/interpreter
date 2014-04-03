@@ -27,6 +27,9 @@ public class Program {
     public void resolveAddresses(){
         HashMap<String,Integer> addresses = new java.util.HashMap<String,Integer>();
         
+        
+        // Map each Name associated with a Label byte code to the address
+        // of that label byte code. 
         for ( int i=0; i<byteCodes.size(); i++){
             if (byteCodes.get(i).getClass().getName()=="interpreter.ByteCode.LabelByteCode") {
                 String label = ((LabelByteCode)byteCodes.get(i)).label;
@@ -34,21 +37,33 @@ public class Program {
             }
         }
         
+        
+        // Run through the ByteCodes a second time to resolve the String targets
+        // of GOTO, CALL, and FALSEBRANCH bytecodes to the integer address
+        // of the corresponding LABEL bytecode. 
+        // NOTE: -->   Currently this loop calls .getClass().getName.equals()
+        // three times on each bytecode that is not a redirecting code.  
+        // this could resulting in very slow loading of larger bytecode files?  
         for ( int i=0; i<byteCodes.size(); i++){
-            if (byteCodes.get(i).getClass().getName()=="interpreter.ByteCode.CallByteCode") {
+            //CALL bytecodes
+            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.CallByteCode")) {
                 CallByteCode callCode = ((CallByteCode)byteCodes.get(i));
                 String label = callCode.func;
-                int targetAddress = addresses.get(label);
-                callCode.func = Integer.toString(targetAddress);
+                callCode.targetAddrs = addresses.get(label);
             }
-            // GOTO
+            
+            // GOTO bytecodes
+            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.GoToByteCode")) {
+                GoToByteCode gotoCode = ((GoToByteCode)byteCodes.get(i));
+                String label = gotoCode.label;
+                gotoCode.targetAddrs = addresses.get(label);
+            }
             
             // FALSEBRANCH
-            if (byteCodes.get(i).getClass().getName()=="interpreter.ByteCode.FalseBranchByteCode") {
+            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.FalseBranchByteCode")) {
                 FalseBranchByteCode branchCode = ((FalseBranchByteCode)byteCodes.get(i));
                 String label =  branchCode.targetLabel;
-                int targetAddress = addresses.get(label);
-                branchCode.targetLabel = Integer.toString(targetAddress);
+                branchCode.targetAddrs = addresses.get(label);
             }
             
         }

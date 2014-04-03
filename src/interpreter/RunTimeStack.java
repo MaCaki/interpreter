@@ -23,6 +23,8 @@ public class RunTimeStack {
     }
     
     // dump the RunTimStack for debugging info
+    // Return a string representation of the runStack to the VM to be dumped
+    // to the console. 
     public void dump(){
         Vector<Integer> stack = (Vector)runStack.clone();
         Vector<Integer> framePtrs = (Vector)framePointers.clone();

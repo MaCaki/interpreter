@@ -21,8 +21,8 @@ public class BopByteCode extends ByteCode{
     public void execute(VirtualMachine vm){
         BinaryOperation op = BinaryOpTable.get(binaryOp);
         
-        int secondOperand = vm.runStack.pop();
-        int firstOperand = vm.runStack.pop();
+        int secondOperand = vm.popRunStack();
+        int firstOperand = vm.popRunStack();
         
         int result = op.binaryOp(firstOperand, secondOperand);
         vm.runStack.push(result);
