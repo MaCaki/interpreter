@@ -10,6 +10,9 @@ import interpreter.VirtualMachine;
  * function has n args so ARGS n instructs the interpreter to set up a new frame
  * n down from the top, so it will include the arguments. 
  * 
+ * @numArguments This is the offset of the frame to be popped for the 
+ * next function call. 
+ * 
  * @author admin
  */
 
@@ -22,11 +25,14 @@ public class ArgsByteCode extends ByteCode{
         
     public void execute(VirtualMachine vm){
         vm.newFrameOnRunTimeStackAt(numArguments);
-        
-        if (vm.dumping) {
-            System.out.println("ARGS " + numArguments);
-            vm.runStack.dump();
-        }
+    }
+    
+    /**
+     * 
+     * @return The string representation of ArgsByteCode
+     */
+    public String toString(){
+        return "ARGS " + numArguments;
     }
     
 }

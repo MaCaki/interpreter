@@ -16,10 +16,10 @@ public class LabelByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-         if (vm.dumping) {
-            System.out.println("LABEL " + label);
-            vm.runStack.dump();
-        }
+    }
+    
+    public String toString(){
+        return "LABEL " + label;
     }
     
 }

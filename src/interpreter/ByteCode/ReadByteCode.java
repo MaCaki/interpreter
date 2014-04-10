@@ -18,11 +18,10 @@ public class ReadByteCode extends ByteCode{
         Scanner in = new Scanner(System.in);
         int input = in.nextInt();
         
-        vm.runStack.push(input);
-        
-        if (vm.dumping) {
-            System.out.println("READ");
-            vm.runStack.dump();
-        }
+        vm.pushRunStack(input);
+    }
+    
+    public String toString(){
+        return "READ";
     }
 }

@@ -7,9 +7,9 @@ import interpreter.ByteCode.*;
  */
 public class VirtualMachine {
     
-    public int pc;
+    private int pc;
     private Stack<Integer> returnAddrs;
-    public RunTimeStack runStack;
+    private RunTimeStack runStack;
     private boolean isRunning;
     private Program program;
     public boolean dumping = false;
@@ -38,10 +38,27 @@ public class VirtualMachine {
         while (isRunning){
             ByteCode code = program.getCode(pc);
             code.execute(this);
+            // only dump if the current code is not DUMP and dumping is set. 
+            if (!code.getClass().getName().equals("interpreter.ByteCode.DumpByteCode")
+                    && dumping){
+                System.out.println(code.toString());
+                runStack.dump();
+            }
             pc++;
         }
     }
     
+    public void incrementPc(){
+        pc++;
+    }
+    
+    public void setPc(int n){
+        pc = n;
+    }
+    
+    public int getPc(){
+        return pc;
+    }
     
     public void pushReturnAddrs(int n){
         returnAddrs.push(n);
@@ -59,5 +76,27 @@ public class VirtualMachine {
         runStack.newFrameAt(numArguments);
     }
     
+    public int popRunStack(){
+        return runStack.pop();
+    }
     
+    public void pushRunStack(int n){
+        runStack.push(n);
+    }
+    
+    public int loadRunStack(int n){
+        return runStack.load(n);
+    }
+    
+    public void popRunStackFrame(){
+        runStack.popFrame();
+    }
+    
+    public int storeRunStack(int offset){
+        return runStack.store(offset);
+    }
+    
+    public int peekRunStack(){
+        return runStack.peek();
+    }
 }

@@ -16,12 +16,11 @@ public class ReturnByteCode extends ByteCode{
     
     // Every bytecode will be responsible for its own execution. 
     public void execute(VirtualMachine vm){
-        vm.pc = vm.popReturnAddrs();
-        vm.runStack.popFrame();
-        
-        if (vm.dumping) {
-            System.out.println("RETURN " + func);
-            vm.runStack.dump();
-        }
+        vm.setPc(vm.popReturnAddrs());
+        vm.popRunStackFrame();
+    }
+    
+    public String toString(){
+        return "RETURN " + func;
     }
 }

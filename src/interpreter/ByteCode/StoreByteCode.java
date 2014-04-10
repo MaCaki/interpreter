@@ -13,6 +13,7 @@ public class StoreByteCode extends ByteCode{
     
     int offset;
     String id = "";
+    int value;
     
     public void init(String arguments[]){
         offset = Integer.parseInt(arguments[1]);
@@ -20,12 +21,11 @@ public class StoreByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        vm.runStack.store(offset);
-        
-        if (vm.dumping) {
-            System.out.println("STORE " + offset + " " + id);
-            vm.runStack.dump();
-        }
+        value = vm.storeRunStack(offset);
+    }
+    
+    public String toString(){
+        return "STORE " + offset + " " + id + "     " + id + " = " + value;
     }
     
 }

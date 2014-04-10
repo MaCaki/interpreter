@@ -14,12 +14,11 @@ public class GoToByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        vm.pc= targetAddrs;
-        
-        if (vm.dumping) {
-            System.out.println("GOTO " + label);
-            vm.runStack.dump();
-        }
+        vm.setPc(targetAddrs);
+    }
+    
+    public String toString(){
+        return "GOTO " + label;
     }
     
 }

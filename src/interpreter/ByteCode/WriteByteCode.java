@@ -12,11 +12,10 @@ public class WriteByteCode extends ByteCode{
     
     // Every bytecode will be responsible for its own execution. 
     public void execute(VirtualMachine vm){
-        System.out.println(vm.runStack.peek());
-        
-        if (vm.dumping) {
-            System.out.println("WRITE ");
-            vm.runStack.dump();
-        }
+        System.out.println(vm.peekRunStack());
+    }
+    
+    public String toString(){
+        return "WRITE ";
     }
 }

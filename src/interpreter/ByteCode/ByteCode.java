@@ -19,4 +19,6 @@ public abstract class ByteCode {
     // Every bytecode will be responsible for its own execution. 
     public void execute(VirtualMachine vm){}
     
+    public String toString(){return "";};
+    
 }

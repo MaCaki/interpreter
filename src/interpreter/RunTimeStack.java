@@ -91,7 +91,7 @@ public class RunTimeStack {
         int top = this.pop();
         runStack.add(framePointers.peek()+offset, top);
         runStack.removeElementAt(framePointers.peek()+offset+1);
-        return offset;
+        return top;
     }
     
     // Used to load variables onto the stack 

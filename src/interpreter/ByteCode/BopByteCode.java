@@ -25,14 +25,12 @@ public class BopByteCode extends ByteCode{
         int firstOperand = vm.popRunStack();
         
         int result = op.binaryOp(firstOperand, secondOperand);
-        vm.runStack.push(result);
-        
-        if (vm.dumping) {
-            System.out.println("BOP " + binaryOp);
-            vm.runStack.dump();
-        }
+        vm.pushRunStack(result);
     }
-
+    
+    public String toString(){
+        return "BOP " + binaryOp;
+    }
        
 }
 

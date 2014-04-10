@@ -15,14 +15,12 @@ public class LoadByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        int var = vm.runStack.load(offset);
-        vm.runStack.push(var);
-        
-        if (vm.dumping) {
-            System.out.println("LOAD " + offset + " " + id);
-            vm.runStack.dump();
-        }
-        
+        int var = vm.loadRunStack(offset);
+        vm.pushRunStack(var);
     }
     
+    
+    public String toString(){
+        return "LOAD " + offset + " " + id + "      " + "<load " +id + ">";
+    }
 }

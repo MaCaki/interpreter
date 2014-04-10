@@ -12,11 +12,11 @@ public class PopByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        for(int i=0; i<numLevels; i++) vm.runStack.pop();
+        for(int i=0; i<numLevels; i++) vm.popRunStack();
         
-          if (vm.dumping) {
-            System.out.println("POP " + numLevels);
-            vm.runStack.dump();
-        }
+    }
+    
+    public String toString(){
+        return "POP " + numLevels;
     }
 }

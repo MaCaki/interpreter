@@ -14,10 +14,10 @@ public class LitByteCode extends ByteCode{
     }    
     
     public void execute(VirtualMachine vm){
-        vm.runStack.push(value);
-        if (vm.dumping) {
-            System.out.println("LIT " + value + " " + varName );
-            vm.runStack.dump();
-        }
+        vm.pushRunStack(value);
+    }
+    
+    public String toString(){
+        return "LIT " + value + " " + varName + "  " + "int " + varName;
     }
 }

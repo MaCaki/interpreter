@@ -18,12 +18,10 @@ public class FalseBranchByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        if (vm.runStack.pop()==0) vm.pc = targetAddrs;
-        
-        if (vm.dumping) {
-            System.out.println("FALSEBRANCH " + targetLabel);
-            vm.runStack.dump();
-        }
-    }
+        if (vm.popRunStack()==0) vm.setPc(targetAddrs);
+       }
     
+    public String toString(){
+        return "FALSEBRANCH " + targetLabel;
+    }
 }
