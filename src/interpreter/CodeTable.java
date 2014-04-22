@@ -5,8 +5,7 @@ import interpreter.ByteCode.*;
  * @author admin
  */
 public class CodeTable {
-    
-    private static java.util.HashMap<String,Class> codeTable = new java.util.HashMap<String,Class>();
+    protected static java.util.HashMap<String,Class> codeTable = new java.util.HashMap<String,Class>();
             
     public static Class get(String byteCodeName){
         return codeTable.get(byteCodeName);

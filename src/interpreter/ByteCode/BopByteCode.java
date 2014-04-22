@@ -31,7 +31,6 @@ public class BopByteCode extends ByteCode{
     public String toString(){
         return "BOP " + binaryOp;
     }
-       
 }
 
 
