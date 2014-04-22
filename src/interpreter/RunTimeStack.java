@@ -16,7 +16,7 @@ public class RunTimeStack {
     
     private Vector<Integer> runStack;
             
-    RunTimeStack(){
+    public RunTimeStack(){
         framePointers = new Stack<Integer>();
         framePointers.push(0);
         runStack = new Vector<Integer>();

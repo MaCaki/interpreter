@@ -10,15 +10,16 @@ import interpreter.*;
  */
 
 public abstract class ByteCode {
-    
-    
+
     // Every bytecode will be responsible for its own initialization 
     
     public void init(String arguments[]){}
     
     // Every bytecode will be responsible for its own execution. 
-    public void execute(VirtualMachine vm){}
+    abstract public void execute(VirtualMachine vm);
     
-    public String toString(){return "";};
+    public String toString(){
+        return "";
+    }
     
 }

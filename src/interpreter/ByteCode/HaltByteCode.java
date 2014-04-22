@@ -7,10 +7,6 @@ import interpreter.VirtualMachine;
  */
 public class HaltByteCode extends ByteCode{
     
-    public void init(){
-        
-    }
-    
     public void execute(VirtualMachine vm){
         vm.turnOffVm();
     }

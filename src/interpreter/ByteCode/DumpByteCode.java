@@ -20,4 +20,7 @@ public class DumpByteCode extends ByteCode{
         if (args.contains("OFF")) vm.dumping = false;
     }
     
+    public String toString(){
+        return "";
+    }
 }

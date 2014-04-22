@@ -7,15 +7,15 @@ import interpreter.ByteCode.*;
  */
 public class VirtualMachine {
     
-    private int pc;
-    private Stack<Integer> returnAddrs;
-    private RunTimeStack runStack;
-    private boolean isRunning;
-    private Program program;
+    protected int pc;
+    protected Stack<Integer> returnAddrs;
+    protected RunTimeStack runStack;
+    protected boolean isRunning;
+    protected Program program;
     public boolean dumping = false;
            
             
-    VirtualMachine(Program prog){
+    public VirtualMachine(Program prog){
         program = prog;
         
     }
