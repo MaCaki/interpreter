@@ -5,8 +5,8 @@ import interpreter.VirtualMachine;
  * @author admin
  */
 public class LitByteCode extends ByteCode{
-    int value;
-    String varName = "";
+    protected int value;
+    protected String varName = "";
     
     public void init(String arguments[]){
         value = Integer.parseInt(arguments[1]);

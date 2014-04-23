@@ -16,7 +16,7 @@ public class LineByteCode {
     
     // Every bytecode will be responsible for its own execution. 
     public void execute(DebuggerVirtualMachine vm){
-        vm.setLineNumber(lineNumber);
+        vm.setCurrentLineNumber(lineNumber);
     }
     
 }

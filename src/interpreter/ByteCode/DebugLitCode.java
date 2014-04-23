@@ -4,6 +4,6 @@ package interpreter.ByteCode;
  *
  * @author Raskolnikov
  */
-public class DebugLitCode {
+public class DebugLitCode extends LitByteCode{
     
 }
