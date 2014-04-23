@@ -1,5 +1,6 @@
 package interpreter;
 
+import interpreter.DebuggerUI.DebuggerConsoleUI.DebuggerConsoleUI;
 import interpreter.debugger.DebuggerVirtualMachine;
 import java.io.*;
 import java.util.Scanner;
@@ -33,7 +34,7 @@ public class Interpreter {
         String programName,sourceFile, byteCodeFile;
 
 	public Interpreter(String args[]) {
-            if (args[0].equals("-p")) {
+            if (args[0].equals("-d")) {
                 debugging = true;
                 programName = args[1];
                 sourceFile = programName +".x";
@@ -52,24 +53,23 @@ public class Interpreter {
 
 	void run() {
 		Program program = bcl.loadCodes(debugging);
-                
-                VirtualMachine vm;
+                //-------------Debugging Execution -------------
                 if (debugging){
                     Vector<String> sourceFileVector = new Vector<String>();
                     try { 
-                       sourceFileVector = SourceLoader.readFile(sourceFile);
+                       sourceFileVector = SourceLoader.loadFile(sourceFile);
                     } catch (IOException e){
                         System.out.println("Could not find the source file " + programName +
                                 ".x, you must make sure that this is in the same directory"
                                 + "before the debugger can execute.");
                     }
-                    
-                    vm = new DebuggerVirtualMachine (program, sourceFileVector);
+                    DebuggerConsoleUI consoleUI = new DebuggerConsoleUI(program, sourceFileVector);
+                    consoleUI.run();
+                //------------- Regular Exection -------------
                 } else{
-                    vm = new VirtualMachine(program);
+                    VirtualMachine vm = new VirtualMachine(program);
+                    vm.executeProgram();
                 }
-		
-		vm.executeProgram();
 	}
 
 	public static void main(String args[]) {
@@ -84,15 +84,15 @@ public class Interpreter {
 
 class SourceLoader{
     
-    public static Vector<String> readFile(String fileName)  throws IOException{
+    public static Vector<String> loadFile(String fileName)  throws IOException{
         Scanner fileScanner = new Scanner(new FileReader(fileName));;
         Vector fileVector = new Vector<String>();
         
-        try {
-            String line = fileScanner.nextLine();
+        String line;
+        while(fileScanner.hasNextLine()){
+            line = fileScanner.nextLine();
             fileVector.add(line);
-        } catch (Exception e){}
-        
+        }
         return fileVector;
     }
     

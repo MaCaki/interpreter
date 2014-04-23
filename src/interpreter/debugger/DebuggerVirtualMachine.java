@@ -25,7 +25,7 @@ import java.util.Vector;
 public class DebuggerVirtualMachine extends VirtualMachine{
     Vector<String> sourceFile;
     Stack<FunctionEnvironmentRecord> EnvironmentRecordStack;
-    boolean[] breakPoints;  // Keeps track of whether or not 
+    boolean[] breakPoints;  // Keeps track of whether or not a line has a break point
     
     
     
@@ -43,14 +43,13 @@ public class DebuggerVirtualMachine extends VirtualMachine{
     // returnAddrs stack. 
     // Every ByteCode object should have an exectute( VirtualMacine ) method. 
     // 
-    public void executeProgram(){
+    public void continueRunning(){
         pc = 0;
         runStack = new RunTimeStack();
         returnAddrs = new Stack();
         isRunning = true;
         BinaryOpTable.init();
         
-        System.out.println("-----Running in Debugger Mode-----");
         // VM should be responsible for dumping to Console. 
         
         while (isRunning){
@@ -98,6 +97,16 @@ public class DebuggerVirtualMachine extends VirtualMachine{
     public void beginScope(){
         FunctionEnvironmentRecord newRecord = new FunctionEnvironmentRecord();
     
+    }
+    
+    
+    
+    public void setBreakPoint(int n){
+        breakPoints[n] = true;
+    }
+    
+    public boolean hasBreakPoint(int n){
+        return breakPoints[n];
     }
     
 }
