@@ -1,4 +1,4 @@
-package interpreter.ByteCode;
+package interpreter.ByteCode.debuggerByteCodes;
 import interpreter.VirtualMachine;
 import interpreter.debugger.DebuggerVirtualMachine;
 

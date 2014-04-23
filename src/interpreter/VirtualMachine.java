@@ -13,6 +13,7 @@ public class VirtualMachine {
     protected boolean isRunning;
     protected Program program;
     public boolean dumping = false;
+    boolean haltReached=false;
            
             
     public VirtualMachine(Program prog){
@@ -70,6 +71,11 @@ public class VirtualMachine {
    
     public void turnOffVm(){
         isRunning = false;
+        haltReached = true;
+    }
+    
+    public boolean doneExecuting(){
+        return haltReached;
     }
     
     public void newFrameOnRunTimeStackAt( int numArguments){

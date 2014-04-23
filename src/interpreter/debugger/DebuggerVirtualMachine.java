@@ -23,35 +23,34 @@ import java.util.Vector;
  * 
  */
 public class DebuggerVirtualMachine extends VirtualMachine{
-    Vector<String> sourceFile;
-    Stack<FunctionEnvironmentRecord> EnvironmentRecordStack;
-    boolean[] breakPoints;  // Keeps track of whether or not a line has a break point
-    
-    
-    
+    private Vector<AnnotatedSourceLine> sourceCodeLines;
+    private Stack<FunctionEnvironmentRecord> EnvironmentRecordStack;
+    private int currentLineNumber;
     
     public DebuggerVirtualMachine(Program prog, Vector<String> source){
         super(prog);
-        sourceFile = source;
+        sourceCodeLines = AnnotatedSourceLine.annotate(source);
         EnvironmentRecordStack = new Stack<FunctionEnvironmentRecord>();
-        breakPoints = new boolean[sourceFile.size()];
-        HelperMethods.initializeToFalse(breakPoints);
-        
     }
-    // Each time a function is entered in the Program, the address the VM should
-    // return to once the Program returns from the function is pushed onto the
-    // returnAddrs stack. 
-    // Every ByteCode object should have an exectute( VirtualMacine ) method. 
-    // 
-    public void continueRunning(){
+    
+    /**
+     * This must run before the VM can start executing the program. 
+     */
+    public void initialize(){
         pc = 0;
         runStack = new RunTimeStack();
         returnAddrs = new Stack();
         isRunning = true;
+        currentLineNumber = 0;
         BinaryOpTable.init();
-        
-        // VM should be responsible for dumping to Console. 
-        
+    }
+    
+    /**
+     * This will launch the initialized VM to start running until it hits a 
+     * break point. 
+     */
+    public void continueRunning(){
+        isRunning = true;
         while (isRunning){
             ByteCode code = program.getCode(pc);
             code.execute(this);
@@ -62,28 +61,56 @@ public class DebuggerVirtualMachine extends VirtualMachine{
                 runStack.dump();
             }
             pc++;
+            /* Check to see if current line has a break point*/
+            
+            if (isBreakPointSet(getCurrentLineNumber())) isRunning = false;
+            
         }
     }
     
-    public void setCurrentLineNumber(int n){
-        currentRecord().setCurrentLine(n);
+ 
+    
+    
+    /*  ---------   Source Code Getters and Setters -----*/
+    
+    
+    public String getSourceCodeLine(int n){
+        AnnotatedSourceLine AnnotatedLine = sourceCodeLines.get(n);
+        String line = AnnotatedLine.getLine();
+        return line;
+    }
+    
+     public void setBreakPoint(int n){
+        sourceCodeLines.get(n-1).setBreakPoint();
+    }
+     
+      public void clearBreakPoint(int n){
+        sourceCodeLines.get(n-1).clearBreakPoint();
+    }
+    
+    public boolean isBreakPointSet(int n){
+        return sourceCodeLines.get(n-1).isBreakPointSet();
+    }
+    
+    public int sourceCodeSize(){
+        return sourceCodeLines.size();
     }
     
     
-    public Vector<String> getSourceFile(){
-        return sourceFile;
-    }
-    
+    /*  ---------  FunctionEnvironStack   Getters and Setters -----*/
     private FunctionEnvironmentRecord currentRecord(){
         return EnvironmentRecordStack.peek();
     }
     
-    public void setCurrentLine(int n){
-        currentRecord().setCurrentLine(n);
+      public void setCurrentLineNumber(int n){
+        currentLineNumber =n;
+        if (!EnvironmentRecordStack.empty()){
+            currentRecord().setCurrentLine(n);
+        }
     }
     
-    public int getCurrentLine(){
-        return currentRecord().getCurrentLine();
+    public int getCurrentLineNumber(){
+        return currentLineNumber;
     }
     
     public void setFunction(String name, int start, int end){
@@ -99,24 +126,55 @@ public class DebuggerVirtualMachine extends VirtualMachine{
     
     }
     
-    
-    
-    public void setBreakPoint(int n){
-        breakPoints[n] = true;
-    }
-    
-    public boolean hasBreakPoint(int n){
-        return breakPoints[n];
-    }
-    
+   
 }
 
 
-class HelperMethods{
-    
-    public static void initializeToFalse(boolean[] b){
-        for (int i =0 ; i< b.length; i++){
-            b[i] = false;
+
+/**
+ * A helper class to contain source code text as well as information about
+ * the source code such as if a break point is set.  
+ * 
+ * @author Raskolnikov
+ */
+class AnnotatedSourceLine{
+
+    static Vector<AnnotatedSourceLine> annotate(Vector<String> source) {
+        Vector<AnnotatedSourceLine> annotatedVector = new Vector<AnnotatedSourceLine>();
+        
+        for (int i=0; i<source.size(); i++){
+            AnnotatedSourceLine annotatedLine = new AnnotatedSourceLine(source.get(i));
+            annotatedVector.add(annotatedLine);
         }
+        return annotatedVector;
     }
+    private boolean isBreakPointSet;
+    private String sourceCodeLine;
+    
+    AnnotatedSourceLine(String line, boolean breakpoint){
+        isBreakPointSet = breakpoint;
+        sourceCodeLine = line;
+    }
+    
+    AnnotatedSourceLine(String line){
+        isBreakPointSet = false;
+        sourceCodeLine = line;
+    }
+    
+    public String getLine(){
+        return sourceCodeLine;
+    }
+    
+    public boolean isBreakPointSet(){
+        return isBreakPointSet;
+    }
+    
+    public void setBreakPoint(){
+        isBreakPointSet = true;
+    }
+    
+    public void clearBreakPoint(){
+        isBreakPointSet = false;
+    }
+    
 }

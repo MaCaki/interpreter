@@ -1,4 +1,6 @@
-package interpreter.ByteCode;
+package interpreter.ByteCode.debuggerByteCodes;
+
+import interpreter.ByteCode.CallByteCode;
 
 /**
  *

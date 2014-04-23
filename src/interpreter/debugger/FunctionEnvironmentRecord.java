@@ -55,6 +55,7 @@ public class FunctionEnvironmentRecord {
     }
     
     public void beginScope(){
+        FunctionEnvironmentRecord freshRecord = new FunctionEnvironmentRecord();
         table.beginScope();
     }
     

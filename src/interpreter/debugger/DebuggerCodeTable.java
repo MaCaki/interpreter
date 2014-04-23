@@ -1,4 +1,5 @@
 package interpreter.debugger;
+import interpreter.ByteCode.debuggerByteCodes.*;
 import interpreter.ByteCode.*;
 import interpreter.CodeTable;
 

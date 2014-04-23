@@ -28,14 +28,19 @@ public class DebuggerConsoleUI {
     
     public void run(){
   
-       
+        vm.initialize();
         System.out.println("-----Running in Debugger Mode-----");
         printSourceCode();
-
         
-        waitForUser();
+        helpMenu();
         
+        while (!vm.doneExecuting()){
+             waitForUser();
+        }
+       
     }
+    
+    
     
     private void waitForUser(){
         help();
@@ -46,14 +51,18 @@ public class DebuggerConsoleUI {
         
         String commandSymbol = currentCommandTokens.nextToken().trim();
         String functionName = commandTable.get(commandSymbol);
+        
+        if (functionName == null ) {
+            System.out.println("Sorry, could not interpret command " + commandSymbol + 
+                    ", please enter a new command");
+            return;
+        }
+        
         Method UImethod;
         
         try{
             UImethod = DebuggerConsoleUI.class.getDeclaredMethod(functionName, (Class[])null );
             UImethod.invoke(this, (Object[])null);
-        } catch (NoSuchMethodException e){
-            System.out.println("Sorry, could not interpret command " + commandSymbol + 
-                    ", please enter a new command");
         } catch (Exception e){
             System.out.println("Something went wrong, try again");
         }
@@ -61,44 +70,71 @@ public class DebuggerConsoleUI {
     
     
     
-    void help(){
+    public void help(){
         System.out.print("Type ? for help \n >");
     }
     
-    void continueRunning(){
+    public void continueRunning(){
         vm.continueRunning();
     }
     
-    void setBreakPoints(){
+    public void setBreakPoints(){
         while(currentCommandTokens.hasMoreTokens()){
             try {
-                vm.setBreakPoint(Integer.parseInt(currentCommandTokens.nextToken().trim()));
+                int line = Integer.parseInt(currentCommandTokens.nextToken().trim());
+                vm.setBreakPoint(line);
             } catch (Exception e){
                 System.out.println("Something was wrong with your arguments.");
             }
         }
     }
     
-    private void initializeCommandTable(){
-        commandTable.put("c", "continueRunning");
+    public void clearBreakPoints(){
+        while(currentCommandTokens.hasMoreTokens()){
+            try {
+                int line = Integer.parseInt(currentCommandTokens.nextToken().trim());
+                vm.clearBreakPoint(line);
+            } catch (Exception e){
+                System.out.println("Something was wrong with your arguments.");
+            }
+        }
     }
+    
+   
     
     private void printSourceCode(){
         
         System.out.print("Source Code: \n ------------------- \n");
-        Vector<String> source = vm.getSourceFile();
         
-        for (int i =0; i< source.size(); i++){
-            System.out.printf("%2d:", i+1);
-            System.out.print(source.get(i));
-            if ( vm.hasBreakPoint(i)) {
-                System.out.println("\t <= BREAKPOINT");
-            } else {
-                System.out.println();
+        for (int i =0; i< vm.sourceCodeSize(); i++){
+            String line =vm.getSourceCodeLine(i);
+            String breakFlag ="";
+            if (vm.isBreakPointSet(i)){
+                breakFlag = "\t <= ** BREAKPOINT SET **";
             }
+            System.out.printf("%2d: %-50s %s \n", i+1, line, breakFlag);
         }
         System.out.print(" ------------------- \n");
         
+    }
+    
+    private void helpMenu(){
+        System.out.println("The following are valid commands: ");       
+        System.out.printf("\t %-10s \t %s  \n", "c", "Continue execution of program until next break point.");
+        System.out.printf("\t %-10s \t %s \n", "sb <lines>", "Set break point on the lines corresponding to the numbers passed to it.");
+        System.out.printf("\t %-10s \t %s \n", "cb <lines>", "Clear break point on the lines corresponding to the numbers passed to it.");
+        System.out.printf("\t %-10s \t %s \n", "print", "Print annotated source code.");
+    }
+    
+    
+    
+    
+     private void initializeCommandTable(){
+        commandTable.put("?", "helpMenu");
+        commandTable.put("c", "continueRunning");
+        commandTable.put("sb", "setBreakPoints");
+        commandTable.put("cb", "clearBreakPoints");
+        commandTable.put("print", "printSourceCode");
     }
     
 }
