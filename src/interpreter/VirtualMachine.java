@@ -105,4 +105,8 @@ public class VirtualMachine {
     public int peekRunStack(){
         return runStack.peek();
     }
+    
+    public int getCurrentOffset(){
+        return runStack.currentOffset();
+    }
 }

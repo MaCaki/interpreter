@@ -65,17 +65,19 @@ public class RunTimeStack {
     }
     
     
-    // the offset indicates the number of slots down from the top of the 
-    // runtime stack for startgin the new frame
+    /* the offset indicates the number of slots down from the top of the 
+     runtime stack for startgin the new frame
+    */ 
     public void newFrameAt(int offset){
         int size = runStack.size();
         framePointers.push(size-offset);
         
     }
             
-    // Pop the top frame when we return from a function. Before popping the 
-    // function's return value is at the top of the stack so we'll save the 
-    // value, pop the top frame then push the return value.
+    /* Pop the top frame when we return from a function. Before popping the 
+     function's return value is at the top of the stack so we'll save the 
+     value, pop the top frame then push the return value.
+    */
     public void popFrame(){
         int top = this.pop();
         int currentSize = runStack.size();
@@ -106,6 +108,16 @@ public class RunTimeStack {
     public Integer push(Integer i){
         runStack.addElement(i);
         return i;
+    }
+    /*
+     * Returns the difference between the current slot in the runStack and the
+     * position of the current frame pointer.
+     * 
+     */
+    public int currentOffset(){
+        int offset = (runStack.size()-1) -framePointers.peek();
+        
+        return offset;
     }
     
 }

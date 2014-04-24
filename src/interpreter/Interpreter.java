@@ -1,6 +1,7 @@
 package interpreter;
 
 import interpreter.DebuggerUI.DebuggerConsoleUI.DebuggerConsoleUI;
+import interpreter.debugger.DebuggerCodeTable;
 import interpreter.debugger.DebuggerVirtualMachine;
 import java.io.*;
 import java.util.Scanner;
@@ -35,16 +36,18 @@ public class Interpreter {
 
 	public Interpreter(String args[]) {
             if (args[0].equals("-d")) {
+                DebuggerCodeTable.init();
                 debugging = true;
                 programName = args[1];
                 sourceFile = programName +".x";
                 byteCodeFile = programName + ".x.cod";
             }else{
+                CodeTable.init();
                 byteCodeFile = args[0];
             }    
 
             try {
-                    CodeTable.init();
+                    
                     bcl = new ByteCodeLoader(byteCodeFile);
             } catch (IOException e) {
                     System.out.println("**** " + e);

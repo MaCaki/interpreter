@@ -22,6 +22,10 @@ public class Program {
         return (ByteCode)byteCodes.get(index);
     }
     
+    public int getNumberOfByteCodes(){
+        return byteCodes.size();
+    }
+    
     // When the bytecodes are loaded into the program, the addresses do 
     // not yet point to the corresponding bytecodes to be exectued.  
     public void resolveAddresses(){
@@ -46,10 +50,18 @@ public class Program {
         // this could resulting in very slow loading of larger bytecode files?  
         for ( int i=0; i<byteCodes.size(); i++){
             //CALL bytecodes
-            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.CallByteCode")) {
+            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.CallByteCode") 
+                    ||byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.DebugCallCode") ) {
                 CallByteCode callCode = ((CallByteCode)byteCodes.get(i));
                 String label = callCode.func;
                 callCode.targetAddrs = addresses.get(label);
+            }
+            
+            //DebugCallCode
+            if (byteCodes.get(i).getClass().getName().equals("interpreter.ByteCode.DebugCallCode") ) {
+                DebugCallCode debugCallCode = ((DebugCallCode)byteCodes.get(i));
+                String label = debugCallCode.func;
+                debugCallCode.targetAddrs = addresses.get(label);
             }
             
             // GOTO bytecodes

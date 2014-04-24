@@ -1,8 +1,6 @@
 package interpreter.debugger;
 import interpreter.*;
-import interpreter.ByteCode.BinaryOpTable;
-import interpreter.ByteCode.ByteCode;
-import java.util.EnumSet;
+import interpreter.ByteCode.*;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -25,6 +23,7 @@ import java.util.Vector;
 public class DebuggerVirtualMachine extends VirtualMachine{
     private Vector<AnnotatedSourceLine> sourceCodeLines;
     private Stack<FunctionEnvironmentRecord> EnvironmentRecordStack;
+    private Stack<Integer> validBreakPoints; 
     private int currentLineNumber;
     
     public DebuggerVirtualMachine(Program prog, Vector<String> source){
@@ -42,6 +41,9 @@ public class DebuggerVirtualMachine extends VirtualMachine{
         returnAddrs = new Stack();
         isRunning = true;
         currentLineNumber = 0;
+        beginScope();
+        validBreakPoints = new Stack<Integer>();
+        inventoryValidBreakPoints();
         BinaryOpTable.init();
     }
     
@@ -68,32 +70,48 @@ public class DebuggerVirtualMachine extends VirtualMachine{
         }
     }
     
- 
-    
     
     /*  ---------   Source Code Getters and Setters -----*/
     
     
     public String getSourceCodeLine(int n){
-        AnnotatedSourceLine AnnotatedLine = sourceCodeLines.get(n);
+        AnnotatedSourceLine AnnotatedLine = sourceCodeLines.get(n-1);
         String line = AnnotatedLine.getLine();
         return line;
     }
     
-     public void setBreakPoint(int n){
-        sourceCodeLines.get(n-1).setBreakPoint();
+     public boolean setBreakPoint(int n){
+        if (validBreakPoints.contains(n)){
+            sourceCodeLines.get(n-1).setBreakPoint();
+            return true;
+        } 
+        return false;
     }
      
-      public void clearBreakPoint(int n){
+    public void clearBreakPoint(int n){
         sourceCodeLines.get(n-1).clearBreakPoint();
     }
     
     public boolean isBreakPointSet(int n){
-        return sourceCodeLines.get(n-1).isBreakPointSet();
+        if (n>1) return sourceCodeLines.get(n-1).isBreakPointSet();
+        return false;
     }
     
     public int sourceCodeSize(){
         return sourceCodeLines.size();
+    }
+    
+    public Integer[] getBreakPoints() {
+        Vector<Integer> breakPoints = new Vector<Integer>();
+        
+        for ( int line =1; line<=sourceCodeSize(); line++){
+            if (isBreakPointSet(line)) breakPoints.add(line);
+        }
+        
+        Integer[] a = new Integer[0];
+        //if (breakPoints.isEmpty()) return new Integer[0];
+        return (Integer[])breakPoints.toArray(a);
+        
     }
     
     
@@ -113,24 +131,53 @@ public class DebuggerVirtualMachine extends VirtualMachine{
         return currentLineNumber;
     }
     
+    /*
+     * Sets the name, beginline and end line of the current record.  This
+     * is executed when a FUNCTION byte code is called. 
+     */
     public void setFunction(String name, int start, int end){
-        
+        FunctionEnvironmentRecord topRecord = EnvironmentRecordStack.peek();
+        topRecord.setFunction(name, start, end);
+        topRecord.setCurrentLine(currentLineNumber);
+    }
+    
+    /*
+     * Creates a new, empty funct env. record and pushes it onto the record 
+     * stack. This is done at initialization, and every time a CALL byte code
+     * is encountered. 
+     */
+    public void beginScope(){
         FunctionEnvironmentRecord newRecord = new FunctionEnvironmentRecord();
         newRecord.beginScope();
-        newRecord.setFunction(name, start, end);
         EnvironmentRecordStack.push(newRecord);
     }
     
-    public void beginScope(){
-        FunctionEnvironmentRecord newRecord = new FunctionEnvironmentRecord();
-    
+    public void loadLiteral(String varname){
+        FunctionEnvironmentRecord currentRecord = EnvironmentRecordStack.peek();
+        currentRecord.enter(varname, getCurrentOffset());
     }
+
+    
+    
+    /*
+     * Goes through the program object and adds all of the argmuents of the
+     * LINE byte codes except for -1's. 
+     */
+    private void inventoryValidBreakPoints(){
+        for(int i=0; i< program.getNumberOfByteCodes(); i++){
+            ByteCode code = program.getCode(i);
+            if ( code.getClass().getName().equals("interpreter.ByteCode.LineByteCode")){
+                int line =((LineByteCode)code).lineNumber();
+                if (line != -1)validBreakPoints.add(line);
+            }
+        }
+    }
+    
+    
+    
     
    
 }
-
-
-
 /**
  * A helper class to contain source code text as well as information about
  * the source code such as if a break point is set.  
