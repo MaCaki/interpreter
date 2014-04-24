@@ -195,7 +195,7 @@ public class DebuggerConsoleUI {
         System.out.printf("\t %-10s \t %s \n", "quit", "Halt execution of the current program.");
         System.out.printf("\t %-10s \t %s \n", "dfn", "Display the current function indicating current point of execution.");
         System.out.printf("\t %-10s \t %s \n", "fest", "Prints the current state of the Function Environment Stack.");
-        System.out.printf("\t %-10s \t %s \n", "vars", "Prints all the .");
+        System.out.printf("\t %-10s \t %s \n", "vars", "Prints all the current variables and their values.");
         
     }
     
