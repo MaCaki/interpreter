@@ -99,7 +99,7 @@ public class RunTimeStack {
     // Used to load variables onto the stack 
     // returns the value that is at a given offset from the start of the
     // current frame. 
-    public int load(int offset){
+    public int getValueAtOffset(int offset){
         
         return runStack.get(framePointers.peek()+offset);
     }

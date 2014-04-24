@@ -90,8 +90,8 @@ public class VirtualMachine {
         runStack.push(n);
     }
     
-    public int loadRunStack(int n){
-        return runStack.load(n);
+    public int getValueAtOffset(int n){
+        return runStack.getValueAtOffset(n);
     }
     
     public void popRunStackFrame(){
@@ -109,4 +109,5 @@ public class VirtualMachine {
     public int getCurrentOffset(){
         return runStack.currentOffset();
     }
+
 }

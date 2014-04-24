@@ -1,6 +1,7 @@
 package interpreter.debugger;
 import interpreter.*;
 import interpreter.ByteCode.*;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -17,14 +18,13 @@ import java.util.Vector;
  * Milestone 3: 
  *     help, set/clear breakpoints, display the current function,
  *      continue execution, quit execution
- *      display variable(s)
+ *      display local variable(s)
  * 
  */
 public class DebuggerVirtualMachine extends VirtualMachine{
     private Vector<AnnotatedSourceLine> sourceCodeLines;
     private Stack<FunctionEnvironmentRecord> EnvironmentRecordStack;
     private Stack<Integer> validBreakPoints; 
-    private int currentLineNumber;
     
     public DebuggerVirtualMachine(Program prog, Vector<String> source){
         super(prog);
@@ -40,7 +40,6 @@ public class DebuggerVirtualMachine extends VirtualMachine{
         runStack = new RunTimeStack();
         returnAddrs = new Stack();
         isRunning = true;
-        currentLineNumber = 0;
         beginScope();
         validBreakPoints = new Stack<Integer>();
         inventoryValidBreakPoints();
@@ -64,9 +63,6 @@ public class DebuggerVirtualMachine extends VirtualMachine{
             }
             pc++;
             /* Check to see if current line has a break point*/
-            
-            if (isBreakPointSet(getCurrentLineNumber())) isRunning = false;
-            
         }
     }
     
@@ -116,21 +112,51 @@ public class DebuggerVirtualMachine extends VirtualMachine{
     
     
     /*  ---------  FunctionEnvironStack   Getters and Setters -----*/
+    
+    public String stringifyFunctionEnvironmentRecord(int n){
+        return EnvironmentRecordStack.get(n).stringifyRecord();
+    }
+    
+    public int sizeOfFuntionCallStack(){
+        return EnvironmentRecordStack.size();
+    }
+    
     private FunctionEnvironmentRecord currentRecord(){
         return EnvironmentRecordStack.peek();
     }
     
-      public void setCurrentLineNumber(int n){
-        currentLineNumber =n;
-        if (!EnvironmentRecordStack.empty()){
-            currentRecord().setCurrentLine(n);
-        }
+    public void setCurrentLineNumber(int n){
+        currentRecord().setCurrentLine(n);
+        // if this line corresponds to a breakoint, stop the VM.
+        if (isBreakPointSet(n)) isRunning = false;
     }
     
     public int getCurrentLineNumber(){
-        return currentLineNumber;
+        return currentRecord().getCurrentLine();
     }
     
+    public int getCurrentFunctionStartLine(){
+        return currentRecord().getStartLine();
+    }
+    
+    public int getCurrentFunctionEndLine(){
+        return currentRecord().getEndLine();
+    }
+    
+    public String getCurrentFunctionName(){
+        return currentRecord().getFunctionName();
+    }
+    
+    public Set<String> getCurrentVariables() {
+        return currentRecord().getCurrentVariables();
+    }
+    
+    public int getVariableValue(String name){
+        int offset = currentRecord().getVariableOffset(name);
+        int value;
+        value = runStack.getValueAtOffset(offset);
+        return value;
+    }
     /*
      * Sets the name, beginline and end line of the current record.  This
      * is executed when a FUNCTION byte code is called. 
@@ -138,7 +164,6 @@ public class DebuggerVirtualMachine extends VirtualMachine{
     public void setFunction(String name, int start, int end){
         FunctionEnvironmentRecord topRecord = EnvironmentRecordStack.peek();
         topRecord.setFunction(name, start, end);
-        topRecord.setCurrentLine(currentLineNumber);
     }
     
     /*
@@ -156,6 +181,23 @@ public class DebuggerVirtualMachine extends VirtualMachine{
         FunctionEnvironmentRecord currentRecord = EnvironmentRecordStack.peek();
         currentRecord.enter(varname, getCurrentOffset());
     }
+    
+    public void enterIntoCurrentRecord(String name, int offset) {
+        EnvironmentRecordStack.peek().enter(name, offset); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    /*
+     * Executed when a DebugPop code is called.  Pops the last n values pushed
+     * onto the FER stack. 
+     */
+    public void popFunctionEnvironmentRecordStack(int n) {
+        EnvironmentRecordStack.peek().pop(n);
+    }
+    
+    public void returnFromFunction(){
+        EnvironmentRecordStack.pop();
+    }
 
     
     
@@ -172,6 +214,11 @@ public class DebuggerVirtualMachine extends VirtualMachine{
             }
         }
     }
+
+    
+
+    
+    
     
     
     

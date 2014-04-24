@@ -3,6 +3,7 @@ import interpreter.Program;
 import interpreter.debugger.*;
 import java.lang.reflect.Method;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -36,7 +37,7 @@ public class DebuggerConsoleUI {
         
  //       ConsoleUIunitTests.test_1(this);
         while (!vm.doneExecuting()){
-             waitForUser();
+             listenToUser();
         }
         
          System.out.println("Execution Finished");
@@ -44,8 +45,13 @@ public class DebuggerConsoleUI {
     }
     
     
-    
-    private void waitForUser(){
+    /*
+     * The user enters a command which is hashed to the corresponding UI function
+     * which is executed within this function.  Once the vm finishes executing
+     * (stops for either a break point or end of program) this function returns
+     * to the run() function. 
+     */
+    private void listenToUser(){
         help();
         String command;
         Scanner input = new Scanner(System.in);
@@ -140,21 +146,57 @@ public class DebuggerConsoleUI {
     }
     
     private void displayCurrentFunction(){
+        System.out.println("--- Current Function:  " + vm.getCurrentFunctionName() +"\n");
+        int beginLine = vm.getCurrentFunctionStartLine();
+        int endLine = vm.getCurrentFunctionEndLine();
+        int currentLine = vm.getCurrentLineNumber();
         
-        
+        for (int n = beginLine; n <= endLine; n++){
+            
+            String line = vm.getSourceCodeLine(n);
+            String currentLineFlag = "";
+            if (n == currentLine) currentLineFlag= "\t <= EXECUTION STOPPED HERE";
+            System.out.printf("%2d: %-50s %s \n", n, line, currentLineFlag);
+        }
+        System.out.println();
+    }
+    
+    private void printVariables(){
+        Set<String> vars = vm.getCurrentVariables();
+        System.out.println("Current Variables: ");
+        for(String variable : vars){
+            
+            int value = vm.getVariableValue(variable);
+            System.out.printf( "%10s : %d \n", variable, value);
+        }
         
         
     }
     
+    
+    private void printFunctionEnvironmentRecordStack(){
+        
+        for ( int i = vm.sizeOfFuntionCallStack()-1; i>=0; i--){
+            System.out.println(vm.stringifyFunctionEnvironmentRecord(i));
+        }
+        
+    }
+    
+    
+    
+    
     private void helpMenu(){
         System.out.println("The following are valid commands: ");       
         System.out.printf("\t %-10s \t %s  \n", "c", "Continue execution of program until next break point.");
-        System.out.printf("\t %-10s \t %s \n", "stb <lines>", "Set break point on the lines corresponding to the numbers passed to it.");
-        System.out.printf("\t %-10s \t %s \n", "clb <lines>", "Clear break point on the lines corresponding to the numbers passed to it.");
+        System.out.printf("\t %-10s \t %s \n", "setb <lines>", "Set break point on the lines corresponding to the numbers passed to it.");
+        System.out.printf("\t %-10s \t %s \n", "clrb <lines>", "Clear break point on the lines corresponding to the numbers passed to it.");
         System.out.printf("\t %-10s \t %s \n", "print", "Print annotated source code.");
-        System.out.printf("\t %-10s \t %s \n", "help", "Print out this help menu.");
+        System.out.printf("\t %-10s \t %s \n", "help/?", "Print out this help menu.");
         System.out.printf("\t %-10s \t %s \n", "quit", "Halt execution of the current program.");
         System.out.printf("\t %-10s \t %s \n", "dfn", "Display the current function indicating current point of execution.");
+        System.out.printf("\t %-10s \t %s \n", "fest", "Prints the current state of the Function Environment Stack.");
+        System.out.printf("\t %-10s \t %s \n", "vars", "Prints all the .");
+        
     }
     
     
@@ -164,11 +206,13 @@ public class DebuggerConsoleUI {
         commandTable.put("?", "helpMenu");
         commandTable.put("help", "helpMenu");
         commandTable.put("c", "continueRunning");
-        commandTable.put("stb", "setBreakPoints");
-        commandTable.put("clb", "clearBreakPoints");
+        commandTable.put("setb", "setBreakPoints");
+        commandTable.put("clrb", "clearBreakPoints");
         commandTable.put("print", "printSourceCode");
         commandTable.put("quit", "quitExecution");
         commandTable.put("dfn", "displayCurrentFunction");
+        commandTable.put("fest", "printFunctionEnvironmentRecordStack");
+        commandTable.put("vars", "printVariables");
     }
 
     public void quitExecution(){

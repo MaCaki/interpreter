@@ -1,6 +1,7 @@
 package interpreter.ByteCode;
 import interpreter.ByteCode.ByteCode;
 import interpreter.VirtualMachine;
+import interpreter.debugger.DebuggerVirtualMachine;
 
 /**
  * A debugger bytecode that tells the debugger VM what the name and offset
@@ -23,7 +24,7 @@ public class FormalByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        
+        ((DebuggerVirtualMachine)vm).enterIntoCurrentRecord(name, offset);
         
     }
 }

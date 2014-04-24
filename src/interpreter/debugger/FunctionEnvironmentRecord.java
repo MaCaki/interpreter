@@ -1,5 +1,5 @@
-
 package interpreter.debugger;
+import java.util.Set;
 
 /**
  *
@@ -27,6 +27,7 @@ public class FunctionEnvironmentRecord {
         functName = name;
         startLine = start;
         endLine = end;
+        currentLine = null;
     }
     
     
@@ -54,6 +55,17 @@ public class FunctionEnvironmentRecord {
         return currentLine;
     }
     
+    public String getFunctionName(){
+        return functName;
+    }
+    
+    public Set<String> getCurrentVariables(){
+        return table.keys();
+    }
+    
+    public int getVariableOffset(String name){
+        return table.get(name);
+    }
     public void beginScope(){
         FunctionEnvironmentRecord freshRecord = new FunctionEnvironmentRecord();
         table.beginScope();
@@ -70,8 +82,8 @@ public class FunctionEnvironmentRecord {
     }
     
     
-    public String dump(){
-        return "(" + this.printTable() + "," + 
+    public String stringifyRecord(){
+        return "(" + this.stringifyTable() + "," + 
                 (functName!=null ? functName : "-")+
                 "," + 
                 (startLine!=null ?startLine :"-") +
@@ -83,7 +95,7 @@ public class FunctionEnvironmentRecord {
     }
     
     // Returns a string of the key value pairs <a/1,b/0,...>
-    public String printTable(){
+    public String stringifyTable(){
         String tableState = "<";
         java.util.Set<String> keys =table.keys() ;
         for (String key : keys ){
@@ -131,27 +143,27 @@ class FunctionEnvironmentRecordUnitTests{
         
         System.out.print("Enter a 4 \t");
         record.enter("a", 4);       
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
         System.out.print("Enter b 2 \t");
         record.enter("b", 2);       
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
         System.out.print("Enter c 7 \t");
         record.enter("c", 7);       
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
         System.out.print("Enter a 1 \t");
         record.enter("a", 1);       
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
         System.out.print("Pop 2     \t");
         record.pop(2);
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
          System.out.print("POP 1     \t");
         record.pop(1);
-        System.out.println(record.dump());
+        System.out.println(record.stringifyRecord());
         
     }
     

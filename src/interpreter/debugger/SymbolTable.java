@@ -92,9 +92,9 @@ public class SymbolTable {
  /**
   * Gets the object associated with the specified symbol in the Table.
   */
-  public Object get(String key) {
+  public int get(String key) {
 	Binder e = symbols.get(key);
-	return e.getValue();
+	return (Integer)e.getValue();
   }
   
   

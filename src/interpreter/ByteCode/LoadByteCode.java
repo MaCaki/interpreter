@@ -15,7 +15,7 @@ public class LoadByteCode extends ByteCode{
     }
     
     public void execute(VirtualMachine vm){
-        int var = vm.loadRunStack(offset);
+        int var = vm.getValueAtOffset(offset);
         vm.pushRunStack(var);
     }
     
