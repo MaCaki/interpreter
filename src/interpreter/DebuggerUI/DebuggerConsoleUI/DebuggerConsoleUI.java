@@ -37,7 +37,7 @@ public class DebuggerConsoleUI {
         
  //       ConsoleUIunitTests.test_1(this);
         while (!vm.doneExecuting()){
-             listenToUser();
+             waitForUserCommand();
         }
         
          System.out.println("Execution Finished");
@@ -51,7 +51,7 @@ public class DebuggerConsoleUI {
      * (stops for either a break point or end of program) this function returns
      * to the run() function. 
      */
-    private void listenToUser(){
+    private void waitForUserCommand(){
         help();
         String command;
         Scanner input = new Scanner(System.in);
